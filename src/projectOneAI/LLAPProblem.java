@@ -7,15 +7,6 @@ import java.io.IOException;
 
 public class LLAPProblem {
 
-	public int getMoneySpent() {
-		return moneySpent;
-	}
-
-	public void setMoneySpent(int moneySpent) {
-		this.moneySpent = moneySpent;
-	}
-
-	public static int globalTick = 0;
 	private int budget;
 	private int initialProsperityLevel;
 	private int initialFood;
@@ -36,6 +27,60 @@ public class LLAPProblem {
 	private int energyUseBUILD1;
 	private int priceBUILD2;
 	private int foodUseBUILD2;
+	private int materialsUseBUILD2;
+	private int energyUseBUILD2;
+	private int prosperityBUILD1;
+	private int prosperityBUILD2;
+	private int moneySpent;
+	private int delay;
+	private boolean foodReq;
+	private boolean energyReq;
+	private boolean materialsReq;
+
+	public LLAPProblem() throws IOException {
+		String[] lineStrings = this.readLines("Init");
+		String finalString = lineStrings[0];
+		String firstSplit = finalString.replace(';', ',');
+		String[] secondSplit = firstSplit.split(",");
+		this.initialProsperityLevel = Integer.parseInt(secondSplit[0]);
+		this.initialFood = Integer.parseInt(secondSplit[1]);
+		this.initialMaterials = Integer.parseInt(secondSplit[2]);
+		this.initialEnergy = Integer.parseInt(secondSplit[3]);
+		this.unitPriceFood = Integer.parseInt(secondSplit[4]);
+		this.unitPriceMaterials = Integer.parseInt(secondSplit[5]);
+		this.unitPriceEnergy = Integer.parseInt(secondSplit[6]);
+		this.amountRequestFood = Integer.parseInt(secondSplit[7]);
+		this.delayRequestFood = Integer.parseInt(secondSplit[8]);
+		this.amountRequestMaterials = Integer.parseInt(secondSplit[9]);
+		this.delayRequestMaterials = Integer.parseInt(secondSplit[10]);
+		this.amountRequestEnergy = Integer.parseInt(secondSplit[11]);
+		this.delayRequestEnergy = Integer.parseInt(secondSplit[12]);
+		this.priceBUILD1 = Integer.parseInt(secondSplit[13]);
+		this.foodUseBUILD1 = Integer.parseInt(secondSplit[14]);
+		this.materialsUseBUILD1 = Integer.parseInt(secondSplit[15]);
+		this.energyUseBUILD1 = Integer.parseInt(secondSplit[16]);
+		this.prosperityBUILD1 = Integer.parseInt(secondSplit[17]);
+		this.priceBUILD2 = Integer.parseInt(secondSplit[18]);
+		this.foodUseBUILD2 = Integer.parseInt(secondSplit[19]);
+		this.materialsUseBUILD2 = Integer.parseInt(secondSplit[20]);
+		this.energyUseBUILD2 = Integer.parseInt(secondSplit[21]);
+		this.prosperityBUILD2 = Integer.parseInt(secondSplit[22]);
+		this.moneySpent = 0;
+		this.budget = 100000;
+		this.energyReq = false;
+		this.foodReq = false;
+		this.materialsReq = false;
+		this.delay = 0;
+
+	}
+
+	public int getMoneySpent() {
+		return moneySpent;
+	}
+
+	public void setMoneySpent(int moneySpent) {
+		this.moneySpent = moneySpent;
+	}
 
 	public int getDelay() {
 		return delay;
@@ -67,54 +112,6 @@ public class LLAPProblem {
 
 	public void setMaterialsReq(boolean materialsReq) {
 		this.materialsReq = materialsReq;
-	}
-
-	private int materialsUseBUILD2;
-	private int energyUseBUILD2;
-	private int prosperityBUILD1;
-	private int prosperityBUILD2;
-	private int moneySpent;
-	private int delay;
-	private boolean foodReq;
-	private boolean energyReq;
-	private boolean materialsReq;
-
-	public LLAPProblem() throws IOException {
-		String[] lineStrings = this.readLines("Init");
-		String finalString = lineStrings[0];
-		String firstSplit = finalString.replace(';', ',');
-		String[] secondSplit = firstSplit.split(",");
-		System.out.println(firstSplit);
-		this.initialProsperityLevel = Integer.parseInt(secondSplit[0]);
-		this.initialFood = Integer.parseInt(secondSplit[1]);
-		this.initialMaterials = Integer.parseInt(secondSplit[2]);
-		this.initialEnergy = Integer.parseInt(secondSplit[3]);
-		this.unitPriceFood = Integer.parseInt(secondSplit[4]);
-		this.unitPriceMaterials = Integer.parseInt(secondSplit[5]);
-		this.unitPriceEnergy = Integer.parseInt(secondSplit[6]);
-		this.amountRequestFood = Integer.parseInt(secondSplit[7]);
-		this.delayRequestFood = Integer.parseInt(secondSplit[8]);
-		this.amountRequestMaterials = Integer.parseInt(secondSplit[9]);
-		this.delayRequestMaterials = Integer.parseInt(secondSplit[10]);
-		this.amountRequestEnergy = Integer.parseInt(secondSplit[11]);
-		this.delayRequestEnergy = Integer.parseInt(secondSplit[12]);
-		this.priceBUILD1 = Integer.parseInt(secondSplit[13]);
-		this.foodUseBUILD1 = Integer.parseInt(secondSplit[14]);
-		this.materialsUseBUILD1 = Integer.parseInt(secondSplit[15]);
-		this.energyUseBUILD1 = Integer.parseInt(secondSplit[16]);
-		this.prosperityBUILD1 = Integer.parseInt(secondSplit[17]);
-		this.priceBUILD2 = Integer.parseInt(secondSplit[18]);
-		this.foodUseBUILD2 = Integer.parseInt(secondSplit[19]);
-		this.materialsUseBUILD2 = Integer.parseInt(secondSplit[20]);
-		this.energyUseBUILD2 = Integer.parseInt(secondSplit[21]);
-		this.prosperityBUILD2 = Integer.parseInt(secondSplit[22]);
-		this.moneySpent = 0;
-		this.budget = 100000;
-		this.energyReq = false;
-		this.foodReq = false;
-		this.materialsReq = false;
-		this.delay = 0;
-
 	}
 
 	public int getBudget() {
@@ -339,6 +336,29 @@ public class LLAPProblem {
 		return arr;
 	}
 
+	public int getRequestResouce() {
+		int val = this.moneySpent + (unitPriceEnergy + unitPriceFood + unitPriceMaterials);
+		return val;
+	}
+
+	public int getBuild1Cost() {
+		int val = this.moneySpent + (priceBUILD1 + unitPriceEnergy * energyUseBUILD1 + unitPriceFood * foodUseBUILD1
+				+ unitPriceMaterials * materialsUseBUILD1);
+		return val;
+
+	}
+
+	public int getBuild2Cost() {
+		int val = this.moneySpent + (priceBUILD2 + unitPriceEnergy * energyUseBUILD2 + unitPriceFood * foodUseBUILD2
+				+ unitPriceMaterials * materialsUseBUILD2);
+		return val;
+	}
+
+	public int getWaitCost() {
+		int val = this.moneySpent + (unitPriceEnergy + unitPriceFood + unitPriceMaterials);
+		return val;
+	}
+
 	public void RequestFood() {
 		if (delay == 0) {
 			this.initialFood -= 1;
@@ -447,28 +467,28 @@ public class LLAPProblem {
 		}
 	}
 
-	public static void main(String[] args) throws IOException {
-		LLAPProblem problem = new LLAPProblem();
-		System.out.println(problem.getInitialProsperityLevel());
-		System.out.println(problem.getInitialFood());
-		System.out.println(problem.getInitialMaterials());
-		System.out.println(problem.getInitialEnergy());
-		System.out.println(problem.getUnitPriceFood());
-		System.out.println(problem.getUnitPriceMaterials());
-		System.out.println(problem.getUnitPriceEnergy());
-		System.out.println(problem.getAmountRequestFood());
-		System.out.println(problem.getDelayRequestFood());
-		System.out.println(problem.getAmountRequestMaterials());
-		System.out.println(problem.getDelayRequestMaterials());
-		System.out.println(problem.getAmountRequestEnergy());
-		System.out.println(problem.getDelayRequestEnergy());
-		System.out.println(problem.getPriceBUILD1());
-		System.out.println(problem.getMaterialsUseBUILD1());
-		System.out.println(problem.getEnergyUseBUILD1());
-		System.out.println(problem.getProsperityBUILD1());
-		System.out.println(problem.getPriceBUILD2());
-		System.out.println(problem.getMaterialsUseBUILD2());
-		System.out.println(problem.getEnergyUseBUILD2());
-		System.out.println(problem.getProsperityBUILD2());
-	}
+//	public static void main(String[] args) throws IOException {
+//		LLAPProblem problem = new LLAPProblem();
+//		System.out.println(problem.getInitialProsperityLevel());
+//		System.out.println(problem.getInitialFood());
+//		System.out.println(problem.getInitialMaterials());
+//		System.out.println(problem.getInitialEnergy());
+//		System.out.println(problem.getUnitPriceFood());
+//		System.out.println(problem.getUnitPriceMaterials());
+//		System.out.println(problem.getUnitPriceEnergy());
+//		System.out.println(problem.getAmountRequestFood());
+//		System.out.println(problem.getDelayRequestFood());
+//		System.out.println(problem.getAmountRequestMaterials());
+//		System.out.println(problem.getDelayRequestMaterials());
+//		System.out.println(problem.getAmountRequestEnergy());
+//		System.out.println(problem.getDelayRequestEnergy());
+//		System.out.println(problem.getPriceBUILD1());
+//		System.out.println(problem.getMaterialsUseBUILD1());
+//		System.out.println(problem.getEnergyUseBUILD1());
+//		System.out.println(problem.getProsperityBUILD1());
+//		System.out.println(problem.getPriceBUILD2());
+//		System.out.println(problem.getMaterialsUseBUILD2());
+//		System.out.println(problem.getEnergyUseBUILD2());
+//		System.out.println(problem.getProsperityBUILD2());
+//	}
 }
