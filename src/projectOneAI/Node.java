@@ -3,20 +3,47 @@ package projectOneAI;
 public class Node {
 
 	private String stateString;
+	private int[] state;
 	private Node parentNode;
 	private String operateString;
 	private int depth;
 	private int rootPathCost;
 	private int heuristicCost;
 
-	public Node(String stateString, Node parentNode, String operateString, int depth, int rootPathCost,
+	public Node(String operateString, int depth, Node parentNode, int rootPathCost) {
+		this.operateString = operateString;
+		this.depth = depth;
+		this.parentNode = parentNode;
+		this.rootPathCost = rootPathCost;
+	}
+
+	public Node(String stateString, int[] state, Node parentNode, String operateString, int depth, int rootPathCost,
 			int heuristicCost) {
 		this.stateString = stateString;
+		this.state = state;
 		this.parentNode = parentNode;
 		this.operateString = operateString;
 		this.depth = depth;
 		this.rootPathCost = rootPathCost;
 		this.heuristicCost = heuristicCost;
+	}
+
+	public Node(String stateString, int[] state, int depth, int rootPathCost, int heuristicCost) {
+		this.stateString = stateString;
+		this.state = state;
+		this.parentNode = null;
+		this.operateString = "";
+		this.depth = depth;
+		this.rootPathCost = rootPathCost;
+		this.heuristicCost = heuristicCost;
+	}
+
+	public int[] getState() {
+		return state;
+	}
+
+	public void setState(int[] state) {
+		this.state = state;
 	}
 
 	public static void main(String[] args) {

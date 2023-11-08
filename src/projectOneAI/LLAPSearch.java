@@ -1,5 +1,5 @@
 package projectOneAI;
 
-public class LLAPSearch extends GenericSearch {
-
-}
+//public class LLAPSearch extends GenericSearch {
+//
+//}
