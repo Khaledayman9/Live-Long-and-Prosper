@@ -10,6 +10,7 @@ public class Node {
 	private int rootPathCost;
 	private int heuristicCost;
 
+	// For node with no heuristics
 	public Node(String operateString, int depth, Node parentNode, int rootPathCost) {
 		this.operateString = operateString;
 		this.depth = depth;
@@ -17,6 +18,16 @@ public class Node {
 		this.rootPathCost = rootPathCost;
 	}
 
+	// For node with heuristics
+	public Node(String operateString, int depth, Node parentNode, int rootPathCost, int heuristicCost) {
+		this.operateString = operateString;
+		this.depth = depth;
+		this.parentNode = parentNode;
+		this.rootPathCost = rootPathCost;
+		this.heuristicCost = heuristicCost;
+	}
+
+	// OLD
 	public Node(String stateString, int[] state, Node parentNode, String operateString, int depth, int rootPathCost,
 			int heuristicCost) {
 		this.stateString = stateString;
@@ -28,6 +39,7 @@ public class Node {
 		this.heuristicCost = heuristicCost;
 	}
 
+	// For root
 	public Node(String stateString, int[] state, int depth, int rootPathCost, int heuristicCost) {
 		this.stateString = stateString;
 		this.state = state;

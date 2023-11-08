@@ -38,6 +38,10 @@ public class LLAPProblem {
 	private boolean materialsReq;
 
 	public LLAPProblem() throws IOException {
+		initialize();
+	}
+
+	public void initialize() throws IOException {
 		String[] lineStrings = this.readLines("Init");
 		String finalString = lineStrings[0];
 		String firstSplit = finalString.replace(';', ',');
@@ -71,7 +75,10 @@ public class LLAPProblem {
 		this.foodReq = false;
 		this.materialsReq = false;
 		this.delay = 0;
+	}
 
+	public void reset() throws IOException {
+		initialize();
 	}
 
 	public int getMoneySpent() {
@@ -359,31 +366,61 @@ public class LLAPProblem {
 		return val;
 	}
 
+	public int remainingProsperityHeuristic(String Operator) {
+		int remainingProsperity = 0;
+		if (Operator == "Build1") {
+			int currentProsperity = this.initialProsperityLevel + prosperityBUILD1;
+			remainingProsperity = 100 - currentProsperity;
+
+		} else if (Operator == "Build2") {
+			int currentProsperity = this.initialProsperityLevel + prosperityBUILD2;
+			remainingProsperity = 100 - currentProsperity;
+		} else {
+			int currentProsperity = this.initialProsperityLevel;
+			remainingProsperity = 100 - currentProsperity;
+		}
+		if (remainingProsperity < 0) {
+			return 0;
+		}
+		return remainingProsperity;
+	}
+
+	public int resourceCostHeuristic() {
+		int currentResourcesCost = this.getRequestResouce(); // Calculate the cost of requesting resources
+		int build1Cost = this.getBuild1Cost(); // Calculate the cost of BUILD1
+		int build2Cost = this.getBuild2Cost(); // Calculate the cost of BUILD2
+		int waitCost = this.getWaitCost(); // Calculate the cost of WAIT
+
+		// Calculate the total cost
+		int totalCost = currentResourcesCost + Math.min(build1Cost, build2Cost) + waitCost;
+		return totalCost;
+	}
+
 	public void RequestFood() {
 		if (delay == 0) {
+			this.moneySpent += (unitPriceEnergy + unitPriceFood + unitPriceMaterials);
 			this.initialFood -= 1;
 			this.initialEnergy -= 1;
 			this.initialMaterials -= 1;
 			this.delay = delayRequestFood;
 			this.foodReq = true;
 		}
-
 	}
 
 	public void RequestMaterials() {
 		if (delay == 0) {
+			this.moneySpent += (unitPriceEnergy + unitPriceFood + unitPriceMaterials);
 			this.initialFood -= 1;
 			this.initialEnergy -= 1;
 			this.initialMaterials -= 1;
 			this.delay = delayRequestMaterials;
 			this.materialsReq = true;
-
 		}
-
 	}
 
 	public void RequestEnergy() {
 		if (delay == 0) {
+			this.moneySpent += (unitPriceEnergy + unitPriceFood + unitPriceMaterials);
 			this.initialFood -= 1;
 			this.initialEnergy -= 1;
 			this.initialMaterials -= 1;
@@ -406,11 +443,19 @@ public class LLAPProblem {
 		} else {
 			if (foodReq) {
 				this.initialFood += this.amountRequestFood;
-
+				if (this.initialFood > 50) {
+					this.initialFood = 50;
+				}
 			} else if (energyReq) {
 				this.initialEnergy += this.amountRequestEnergy;
+				if (this.initialEnergy > 50) {
+					this.initialEnergy = 50;
+				}
 			} else if (materialsReq) {
 				this.initialMaterials += this.amountRequestMaterials;
+				if (this.initialMaterials > 50) {
+					this.initialMaterials = 50;
+				}
 			}
 			foodReq = false;
 			energyReq = false;
@@ -432,11 +477,19 @@ public class LLAPProblem {
 		} else {
 			if (foodReq) {
 				this.initialFood += this.amountRequestFood;
-
+				if (this.initialFood > 50) {
+					this.initialFood = 50;
+				}
 			} else if (energyReq) {
 				this.initialEnergy += this.amountRequestEnergy;
+				if (this.initialEnergy > 50) {
+					this.initialEnergy = 50;
+				}
 			} else if (materialsReq) {
 				this.initialMaterials += this.amountRequestMaterials;
+				if (this.initialMaterials > 50) {
+					this.initialMaterials = 50;
+				}
 			}
 			foodReq = false;
 			energyReq = false;
@@ -455,11 +508,19 @@ public class LLAPProblem {
 		} else {
 			if (foodReq) {
 				this.initialFood += this.amountRequestFood;
-
+				if (this.initialFood > 50) {
+					this.initialFood = 50;
+				}
 			} else if (energyReq) {
 				this.initialEnergy += this.amountRequestEnergy;
+				if (this.initialEnergy > 50) {
+					this.initialEnergy = 50;
+				}
 			} else if (materialsReq) {
 				this.initialMaterials += this.amountRequestMaterials;
+				if (this.initialMaterials > 50) {
+					this.initialMaterials = 50;
+				}
 			}
 			foodReq = false;
 			energyReq = false;
