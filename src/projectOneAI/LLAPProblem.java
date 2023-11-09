@@ -1,8 +1,5 @@
 package projectOneAI;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 
 public class LLAPProblem {
@@ -36,15 +33,25 @@ public class LLAPProblem {
 	private boolean foodReq;
 	private boolean energyReq;
 	private boolean materialsReq;
+	private String initialState;
 
-	public LLAPProblem() throws IOException {
-		initialize();
+	public LLAPProblem(String initialState) {
+		this.initialState = initialState;
+		initialize(initialState);
 	}
 
-	public void initialize() throws IOException {
-		String[] lineStrings = this.readLines("Init");
-		String finalString = lineStrings[0];
-		String firstSplit = finalString.replace(';', ',');
+	public String getInitialState() {
+		return initialState;
+	}
+
+	public void setInitialState(String initialState) {
+		this.initialState = initialState;
+	}
+
+	public void initialize(String initialState) {
+//		String[] lineStrings = this.readLines("Init");
+//		String finalString = lineStrings[0];
+		String firstSplit = initialState.replace(';', ',');
 		String[] secondSplit = firstSplit.split(",");
 		this.initialProsperityLevel = Integer.parseInt(secondSplit[0]);
 		this.initialFood = Integer.parseInt(secondSplit[1]);
@@ -77,8 +84,8 @@ public class LLAPProblem {
 		this.delay = 0;
 	}
 
-	public void reset() throws IOException {
-		initialize();
+	public void reset(String initialState) {
+		initialize(initialState);
 	}
 
 	public int getMoneySpent() {
@@ -313,35 +320,35 @@ public class LLAPProblem {
 		this.prosperityBUILD2 = prosperityBUILD2;
 	}
 
-	public int noOfLinesPerFile(String fn) throws IOException {
-		File f = new File(fn + ".txt");
-		FileReader fr = new FileReader(f);
-		BufferedReader br = new BufferedReader(fr);
-		String line = "";
-		int numberOfLines = 0;
-		while ((line = br.readLine()) != null) {
-			numberOfLines++;
-		}
-		br.close();
-		return numberOfLines;
-	}
-
-	public String[] readLines(String fn) throws IOException {
-		File f = new File(fn + ".txt");
-		FileReader fr = new FileReader(f);
-		BufferedReader br = new BufferedReader(fr);
-		String line;
-		int numberOfLines = noOfLinesPerFile(fn);
-		String[] arr = new String[numberOfLines];
-		int i = 0;
-		while ((line = br.readLine()) != null) {
-			arr[i] = line;
-			i++;
-		}
-		br.close();
-		fr.close();
-		return arr;
-	}
+//	public int noOfLinesPerFile(String fn) throws IOException {
+//		File f = new File(fn + ".txt");
+//		FileReader fr = new FileReader(f);
+//		BufferedReader br = new BufferedReader(fr);
+//		String line = "";
+//		int numberOfLines = 0;
+//		while ((line = br.readLine()) != null) {
+//			numberOfLines++;
+//		}
+//		br.close();
+//		return numberOfLines;
+//	}
+//
+//	public String[] readLines(String fn) throws IOException {
+//		File f = new File(fn + ".txt");
+//		FileReader fr = new FileReader(f);
+//		BufferedReader br = new BufferedReader(fr);
+//		String line;
+//		int numberOfLines = noOfLinesPerFile(fn);
+//		String[] arr = new String[numberOfLines];
+//		int i = 0;
+//		while ((line = br.readLine()) != null) {
+//			arr[i] = line;
+//			i++;
+//		}
+//		br.close();
+//		fr.close();
+//		return arr;
+//	}
 
 	public int getRequestResouce() {
 		int val = this.moneySpent + (unitPriceEnergy + unitPriceFood + unitPriceMaterials);
@@ -368,6 +375,9 @@ public class LLAPProblem {
 
 	public int remainingProsperityHeuristic(String Operator) {
 		int remainingProsperity = 0;
+		if (Operator == "Root") {
+			remainingProsperity = this.initialProsperityLevel;
+		}
 		if (Operator == "Build1") {
 			int currentProsperity = this.initialProsperityLevel + prosperityBUILD1;
 			remainingProsperity = 100 - currentProsperity;
@@ -528,28 +538,29 @@ public class LLAPProblem {
 		}
 	}
 
-//	public static void main(String[] args) throws IOException {
-//		LLAPProblem problem = new LLAPProblem();
-//		System.out.println(problem.getInitialProsperityLevel());
-//		System.out.println(problem.getInitialFood());
-//		System.out.println(problem.getInitialMaterials());
-//		System.out.println(problem.getInitialEnergy());
-//		System.out.println(problem.getUnitPriceFood());
-//		System.out.println(problem.getUnitPriceMaterials());
-//		System.out.println(problem.getUnitPriceEnergy());
-//		System.out.println(problem.getAmountRequestFood());
-//		System.out.println(problem.getDelayRequestFood());
-//		System.out.println(problem.getAmountRequestMaterials());
-//		System.out.println(problem.getDelayRequestMaterials());
-//		System.out.println(problem.getAmountRequestEnergy());
-//		System.out.println(problem.getDelayRequestEnergy());
-//		System.out.println(problem.getPriceBUILD1());
-//		System.out.println(problem.getMaterialsUseBUILD1());
-//		System.out.println(problem.getEnergyUseBUILD1());
-//		System.out.println(problem.getProsperityBUILD1());
-//		System.out.println(problem.getPriceBUILD2());
-//		System.out.println(problem.getMaterialsUseBUILD2());
-//		System.out.println(problem.getEnergyUseBUILD2());
-//		System.out.println(problem.getProsperityBUILD2());
-//	}
+	public static void main(String[] args) throws IOException {
+		String initialState = "17;" + "49,30,46;" + "7,57,6;" + "7,1;20,2;29,2;" + "350,10,9,8,28;" + "408,8,12,13,34;";
+		LLAPProblem problem = new LLAPProblem(initialState);
+		System.out.println(problem.getInitialProsperityLevel());
+		System.out.println(problem.getInitialFood());
+		System.out.println(problem.getInitialMaterials());
+		System.out.println(problem.getInitialEnergy());
+		System.out.println(problem.getUnitPriceFood());
+		System.out.println(problem.getUnitPriceMaterials());
+		System.out.println(problem.getUnitPriceEnergy());
+		System.out.println(problem.getAmountRequestFood());
+		System.out.println(problem.getDelayRequestFood());
+		System.out.println(problem.getAmountRequestMaterials());
+		System.out.println(problem.getDelayRequestMaterials());
+		System.out.println(problem.getAmountRequestEnergy());
+		System.out.println(problem.getDelayRequestEnergy());
+		System.out.println(problem.getPriceBUILD1());
+		System.out.println(problem.getMaterialsUseBUILD1());
+		System.out.println(problem.getEnergyUseBUILD1());
+		System.out.println(problem.getProsperityBUILD1());
+		System.out.println(problem.getPriceBUILD2());
+		System.out.println(problem.getMaterialsUseBUILD2());
+		System.out.println(problem.getEnergyUseBUILD2());
+		System.out.println(problem.getProsperityBUILD2());
+	}
 }

@@ -1,86 +1,130 @@
 package projectOneAI;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class GenericSearch {
-	LLAPProblem problem;
+	// LLAPProblem problem;
 	private boolean success;
-	private Node goalNode;
-	Queue<Node> pathNodes;
-	private int l;
 
-	public GenericSearch(LLAPProblem problem) {
-		this.problem = problem;
+	private Node goalNode;
+	private Queue<Node> pathNodes;
+	private int l;
+	private int p;
+
+	public GenericSearch() {
+//		this.problem = problem;
 		this.success = false;
 		this.l = 0;
 		this.pathNodes = new LinkedList<Node>();
+		this.p = 0;
 	}
 
-	public void GeneralSearch(LLAPProblem problem, String QueueFun) throws IOException {
-		if (QueueFun == "BF" || QueueFun == "DF" || QueueFun == "UC" || QueueFun == "AS1" || QueueFun == "AS2"
-				|| QueueFun == "ID" || QueueFun == "GR1" || QueueFun == "GR2") {
+	public void GeneralSearch(LLAPProblem problem, String QueueFun) {
+		if (QueueFun.toLowerCase().equals("bf") || QueueFun.toLowerCase().equals("df")
+				|| QueueFun.toLowerCase().equals("uc") || QueueFun.toLowerCase().equals("as1")
+				|| QueueFun.toLowerCase().equals("as2") || QueueFun.toLowerCase().equals("id")
+				|| QueueFun.toLowerCase().equals("gr1") || QueueFun.toLowerCase().equals("gr2")) {
 			Deque<Node> nodes = new LinkedList<Node>();
 			String stateString = setStringState(problem.getInitialProsperityLevel(), problem.getMoneySpent(),
 					problem.getInitialFood(), problem.getInitialMaterials(), problem.getInitialEnergy());
 			int[] stateArray = setArrayState(problem.getInitialProsperityLevel(), problem.getMoneySpent(),
 					problem.getInitialFood(), problem.getInitialMaterials(), problem.getInitialEnergy());
-			Node initialNode = new Node(stateString, stateArray, 0, problem.getMoneySpent(), 0);
+			Node initialNode = new Node(stateString, stateArray, 0, problem.getMoneySpent(),
+					problem.remainingProsperityHeuristic("Root"));
 			nodes.add(initialNode);
 			while (true) {
 				if (nodes.isEmpty()) {
 					goalNode = null;
+					success = false;
 					break;
 				}
 				Node n = nodes.poll();
 				if (!(n.getParentNode() == null)) {
-					if (n.getOperateString() == "wait") {
-						problem.WAIT();
-					} else if (n.getOperateString() == "requestFood") {
-						problem.RequestFood();
-					}
-					if (n.getOperateString() == "requestMaterials") {
-						problem.RequestMaterials();
-					}
-					if (n.getOperateString() == "requestEnergy") {
-						problem.RequestEnergy();
-					}
-					if (n.getOperateString() == "build1") {
+					if (n.getOperateString().toLowerCase().equals("wait")) {
+						if (problem.getDelay() != 0) {
+							problem.WAIT();
+						}
+					} else if (n.getOperateString().toLowerCase().equals("requestfood")) {
+						if (problem.getDelay() == 0) {
+							problem.RequestFood();
+						}
+					} else if (n.getOperateString().toLowerCase().equals("requestaterials")) {
+						if (problem.getDelay() == 0) {
+							problem.RequestMaterials();
+						}
+					} else if (n.getOperateString().toLowerCase().equals("requestenergy")) {
+						if (problem.getDelay() == 0) {
+							problem.RequestEnergy();
+						}
+					} else if (n.getOperateString().toLowerCase().equals("build1")) {
 						problem.Build1();
-					}
-					if (n.getOperateString() == "build2") {
+					} else if (n.getOperateString().toLowerCase().equals("build2")) {
 						problem.Build2();
 					}
-					// n.setRootPathCost(problem.getMoneySpent());
-					if (problem.getInitialEnergy() <= 0 && problem.getInitialFood() <= 0
+
+				}
+				if (problem.getInitialEnergy() <= 0 || problem.getInitialFood() <= 0
+						|| problem.getInitialMaterials() <= 0) {
+
+					if (problem.getInitialEnergy() <= 0 && problem.getInitialFood() > 0
+							&& problem.getInitialMaterials() > 0) {
+
+						n.setStateString(setStringState(problem.getInitialProsperityLevel(), problem.getMoneySpent(),
+								problem.getInitialFood(), problem.getInitialMaterials(), 0));
+						n.setState(setArrayState(problem.getInitialProsperityLevel(), problem.getMoneySpent(),
+								problem.getInitialFood(), problem.getInitialMaterials(), 0));
+
+					} else if (problem.getInitialEnergy() > 0 && problem.getInitialFood() <= 0
+							&& problem.getInitialMaterials() > 0) {
+
+						n.setStateString(setStringState(problem.getInitialProsperityLevel(), problem.getMoneySpent(), 0,
+								problem.getInitialMaterials(), problem.getInitialEnergy()));
+						n.setState(setArrayState(problem.getInitialProsperityLevel(), problem.getMoneySpent(), 0,
+								problem.getInitialMaterials(), problem.getInitialEnergy()));
+
+					} else if (problem.getInitialEnergy() > 0 && problem.getInitialFood() > 0
 							&& problem.getInitialMaterials() <= 0) {
+
+						n.setStateString(setStringState(problem.getInitialProsperityLevel(), problem.getMoneySpent(),
+								problem.getInitialFood(), 0, problem.getInitialEnergy()));
+						n.setState(setArrayState(problem.getInitialProsperityLevel(), problem.getMoneySpent(),
+								problem.getInitialFood(), 0, problem.getInitialEnergy()));
+
+					} else if (problem.getInitialEnergy() <= 0 && problem.getInitialFood() <= 0
+							&& problem.getInitialMaterials() <= 0)
+
 						n.setStateString(
 								setStringState(problem.getInitialProsperityLevel(), problem.getMoneySpent(), 0, 0, 0));
-						n.setState(
-								setArrayState(problem.getInitialProsperityLevel(), problem.getMoneySpent(), 0, 0, 0));
-					} else {
-						n.setStateString(setStringState(problem.getInitialProsperityLevel(), problem.getMoneySpent(),
-								problem.getInitialFood(), problem.getInitialMaterials(), problem.getInitialEnergy()));
-						n.setState(setArrayState(problem.getInitialProsperityLevel(), problem.getMoneySpent(),
-								problem.getInitialFood(), problem.getInitialMaterials(), problem.getInitialEnergy()));
-					}
+					n.setState(setArrayState(problem.getInitialProsperityLevel(), problem.getMoneySpent(), 0, 0, 0));
+
+				} else {
+					n.setStateString(setStringState(problem.getInitialProsperityLevel(), problem.getMoneySpent(),
+							problem.getInitialFood(), problem.getInitialMaterials(), problem.getInitialEnergy()));
+					n.setState(setArrayState(problem.getInitialProsperityLevel(), problem.getMoneySpent(),
+							problem.getInitialFood(), problem.getInitialMaterials(), problem.getInitialEnergy()));
 				}
-				pathNodes.add(n);
-				if (n.getState()[2] <= 0) {
+//				print(nodes);
+				// pathNodes.add(n);
+				if (n.getState()[1] > 100000) {
 					this.setSuccess(false);
 					break;
-				} else if (goalTest(n)) {
+				} else if (n.getState()[2] == 0 || n.getState()[3] == 0 || n.getState()[4] == 0) {
+					this.setSuccess(false);
+					break;
+				} else if (goalTest(problem, n) && n.getState()[1] <= 100000) {
 					this.setSuccess(true);
+					pathNodes.add(n);
 					this.goalNode = n;
 					break;
 				} else {
+					pathNodes.add(n);
 					if (QueueFun == "ID") {
-						nodes = expandID(n, nodes);
+						nodes = expandID(problem, n, nodes);
 					} else {
-						nodes = expandPath(n, nodes, QueueFun);
+						nodes = expandPath(problem, n, nodes, QueueFun);
 					}
 				}
 			}
@@ -96,6 +140,14 @@ public class GenericSearch {
 		String result = "Prosperity level = " + prosperityLevel + " ,Money Spent: " + moneySpent + " ,Food: "
 				+ initialFood + " ,Materials: " + initialMaterials + " ,Energy: " + initialEnergy + ".";
 		return result;
+	}
+
+	public int getL() {
+		return l;
+	}
+
+	public void setL(int l) {
+		this.l = l;
 	}
 
 	public boolean isSuccess() {
@@ -117,47 +169,47 @@ public class GenericSearch {
 		return result;
 	}
 
-	public Deque<Node> expandPath(Node n, Deque<Node> nodes, String QueueFun) {
+	public Deque<Node> expandPath(LLAPProblem problem, Node n, Deque<Node> nodes, String QueueFun) {
 		if (problem.getDelay() != 0) {
-			if (QueueFun == "BF") {
-				Node waitNode = new Node("wait", n.getDepth() + 1, n, problem.getWaitCost());
-				Node build1Node = new Node("build1", n.getDepth() + 1, n, problem.getBuild1Cost());
-				Node build2Node = new Node("build2", n.getDepth() + 1, n, problem.getBuild2Cost());
+			if (QueueFun.toLowerCase().equals("bf")) {
+				Node waitNode = new Node("WAIT", n.getDepth() + 1, n, problem.getWaitCost());
+				Node build1Node = new Node("BUILD1", n.getDepth() + 1, n, problem.getBuild1Cost());
+				Node build2Node = new Node("BUILD2", n.getDepth() + 1, n, problem.getBuild2Cost());
 				nodes.add(waitNode);
 				nodes.add(build1Node);
 				nodes.add(build2Node);
-			} else if (QueueFun == "DF") {
-				Node waitNode = new Node("wait", n.getDepth() + 1, n, problem.getWaitCost());
-				Node build1Node = new Node("build1", n.getDepth() + 1, n, problem.getBuild1Cost());
-				Node build2Node = new Node("build2", n.getDepth() + 1, n, problem.getBuild2Cost());
+			} else if (QueueFun.toLowerCase().equals("df")) {
+				Node waitNode = new Node("WAIT", n.getDepth() + 1, n, problem.getWaitCost());
+				Node build1Node = new Node("BUILD1", n.getDepth() + 1, n, problem.getBuild1Cost());
+				Node build2Node = new Node("BUILD2", n.getDepth() + 1, n, problem.getBuild2Cost());
 				nodes.addFirst(waitNode);
 				nodes.addFirst(build1Node);
 				nodes.addFirst(build2Node);
-			} else if (QueueFun == "UC") {
-				Node waitNode = new Node("wait", n.getDepth() + 1, n, problem.getWaitCost());
-				Node build1Node = new Node("build1", n.getDepth() + 1, n, problem.getBuild1Cost());
-				Node build2Node = new Node("build2", n.getDepth() + 1, n, problem.getBuild2Cost());
+			} else if (QueueFun.toLowerCase().equals("uc")) {
+				Node waitNode = new Node("WAIT", n.getDepth() + 1, n, problem.getWaitCost());
+				Node build1Node = new Node("BUILD1", n.getDepth() + 1, n, problem.getBuild1Cost());
+				Node build2Node = new Node("BUILD2", n.getDepth() + 1, n, problem.getBuild2Cost());
 				nodes.add(waitNode);
 				nodes.add(build1Node);
 				nodes.add(build2Node);
 				orderQueue(nodes, "UC");
-			} else if (QueueFun == "GR1") {
-				Node waitNode = new Node("wait", n.getDepth() + 1, n, problem.getWaitCost(),
+			} else if (QueueFun.toLowerCase().equals("gr1")) {
+				Node waitNode = new Node("WAIT", n.getDepth() + 1, n, problem.getWaitCost(),
 						problem.remainingProsperityHeuristic("wait"));
-				Node build1Node = new Node("build1", n.getDepth() + 1, n, problem.getBuild1Cost(),
+				Node build1Node = new Node("BUILD1", n.getDepth() + 1, n, problem.getBuild1Cost(),
 						problem.remainingProsperityHeuristic("Build1"));
-				Node build2Node = new Node("build2", n.getDepth() + 1, n, problem.getBuild2Cost(),
+				Node build2Node = new Node("BUILD2", n.getDepth() + 1, n, problem.getBuild2Cost(),
 						problem.remainingProsperityHeuristic("Build2"));
 				nodes.add(waitNode);
 				nodes.add(build1Node);
 				nodes.add(build2Node);
 				orderQueue(nodes, "GR");
-			} else if (QueueFun == "GR2") {
-				Node waitNode = new Node("wait", n.getDepth() + 1, n, problem.getWaitCost(),
+			} else if (QueueFun.toLowerCase().equals("gr2")) {
+				Node waitNode = new Node("WAIT", n.getDepth() + 1, n, problem.getWaitCost(),
 						problem.resourceCostHeuristic());
-				Node build1Node = new Node("build1", n.getDepth() + 1, n, problem.getBuild1Cost(),
+				Node build1Node = new Node("BUILD1", n.getDepth() + 1, n, problem.getBuild1Cost(),
 						problem.resourceCostHeuristic());
-				Node build2Node = new Node("build2", n.getDepth() + 1, n, problem.getBuild2Cost(),
+				Node build2Node = new Node("BUILD2", n.getDepth() + 1, n, problem.getBuild2Cost(),
 						problem.resourceCostHeuristic());
 				nodes.add(waitNode);
 				nodes.add(build1Node);
@@ -167,53 +219,53 @@ public class GenericSearch {
 
 			return nodes;
 		} else {
-			if (QueueFun == "BF") {
-				Node requestFoodNode = new Node("requestFood", n.getDepth() + 1, n, problem.getRequestResouce());
-				Node requestMaterialsNode = new Node("requestMaterials", n.getDepth() + 1, n,
+			if (QueueFun.toLowerCase().equals("bf")) {
+				Node requestFoodNode = new Node("RequestFood", n.getDepth() + 1, n, problem.getRequestResouce());
+				Node requestMaterialsNode = new Node("RequestMaterials", n.getDepth() + 1, n,
 						problem.getRequestResouce());
-				Node requestEnergyNode = new Node("requestEnergy", n.getDepth() + 1, n, problem.getRequestResouce());
-				Node build1Node = new Node("build1", n.getDepth() + 1, n, problem.getBuild1Cost());
-				Node build2Node = new Node("build2", n.getDepth() + 1, n, problem.getBuild2Cost());
+				Node requestEnergyNode = new Node("RequestEnergy", n.getDepth() + 1, n, problem.getRequestResouce());
+				Node build1Node = new Node("BUILD1", n.getDepth() + 1, n, problem.getBuild1Cost());
+				Node build2Node = new Node("BUILD2", n.getDepth() + 1, n, problem.getBuild2Cost());
 				nodes.add(requestFoodNode);
 				nodes.add(requestMaterialsNode);
 				nodes.add(requestEnergyNode);
 				nodes.add(build1Node);
 				nodes.add(build2Node);
-			} else if (QueueFun == "DF") {
-				Node requestFoodNode = new Node("requestFood", n.getDepth() + 1, n, problem.getRequestResouce());
-				Node requestMaterialsNode = new Node("requestMaterials", n.getDepth() + 1, n,
+			} else if (QueueFun.toLowerCase().equals("df")) {
+				Node requestFoodNode = new Node("RequestFood", n.getDepth() + 1, n, problem.getRequestResouce());
+				Node requestMaterialsNode = new Node("RequestMaterials", n.getDepth() + 1, n,
 						problem.getRequestResouce());
-				Node requestEnergyNode = new Node("requestEnergy", n.getDepth() + 1, n, problem.getRequestResouce());
-				Node build1Node = new Node("build1", n.getDepth() + 1, n, problem.getBuild1Cost());
-				Node build2Node = new Node("build2", n.getDepth() + 1, n, problem.getBuild2Cost());
+				Node requestEnergyNode = new Node("RequestEnergy", n.getDepth() + 1, n, problem.getRequestResouce());
+				Node build1Node = new Node("BUILD1", n.getDepth() + 1, n, problem.getBuild1Cost());
+				Node build2Node = new Node("BUILD2", n.getDepth() + 1, n, problem.getBuild2Cost());
 				nodes.addFirst(requestFoodNode);
 				nodes.addFirst(requestMaterialsNode);
 				nodes.addFirst(requestEnergyNode);
 				nodes.addFirst(build1Node);
 				nodes.addFirst(build2Node);
-			} else if (QueueFun == "UC") {
-				Node requestFoodNode = new Node("requestFood", n.getDepth() + 1, n, problem.getRequestResouce());
-				Node requestMaterialsNode = new Node("requestMaterials", n.getDepth() + 1, n,
+			} else if (QueueFun.toLowerCase().equals("uc")) {
+				Node requestFoodNode = new Node("RequestFood", n.getDepth() + 1, n, problem.getRequestResouce());
+				Node requestMaterialsNode = new Node("RequestMaterials", n.getDepth() + 1, n,
 						problem.getRequestResouce());
-				Node requestEnergyNode = new Node("requestEnergy", n.getDepth() + 1, n, problem.getRequestResouce());
-				Node build1Node = new Node("build1", n.getDepth() + 1, n, problem.getBuild1Cost());
-				Node build2Node = new Node("build2", n.getDepth() + 1, n, problem.getBuild2Cost());
+				Node requestEnergyNode = new Node("RequestEnergy", n.getDepth() + 1, n, problem.getRequestResouce());
+				Node build1Node = new Node("BUILD1", n.getDepth() + 1, n, problem.getBuild1Cost());
+				Node build2Node = new Node("BUILD2", n.getDepth() + 1, n, problem.getBuild2Cost());
 				nodes.add(requestFoodNode);
 				nodes.add(requestMaterialsNode);
 				nodes.add(requestEnergyNode);
 				nodes.add(build1Node);
 				nodes.add(build2Node);
 				orderQueue(nodes, "UC");
-			} else if (QueueFun == "GR1") {
-				Node requestFoodNode = new Node("requestFood", n.getDepth() + 1, n, problem.getRequestResouce(),
+			} else if (QueueFun.toLowerCase().equals("gr1")) {
+				Node requestFoodNode = new Node("RequestFood", n.getDepth() + 1, n, problem.getRequestResouce(),
 						problem.remainingProsperityHeuristic("Request"));
-				Node requestMaterialsNode = new Node("requestMaterials", n.getDepth() + 1, n,
+				Node requestMaterialsNode = new Node("RequestMaterials", n.getDepth() + 1, n,
 						problem.getRequestResouce(), problem.remainingProsperityHeuristic("Request"));
-				Node requestEnergyNode = new Node("requestEnergy", n.getDepth() + 1, n, problem.getRequestResouce(),
+				Node requestEnergyNode = new Node("RequestEnergy", n.getDepth() + 1, n, problem.getRequestResouce(),
 						problem.remainingProsperityHeuristic("Request"));
-				Node build1Node = new Node("build1", n.getDepth() + 1, n, problem.getBuild1Cost(),
+				Node build1Node = new Node("BUILD1", n.getDepth() + 1, n, problem.getBuild1Cost(),
 						problem.remainingProsperityHeuristic("Build1"));
-				Node build2Node = new Node("build2", n.getDepth() + 1, n, problem.getBuild2Cost(),
+				Node build2Node = new Node("BUILD2", n.getDepth() + 1, n, problem.getBuild2Cost(),
 						problem.remainingProsperityHeuristic("Build2"));
 				nodes.add(requestFoodNode);
 				nodes.add(requestMaterialsNode);
@@ -221,16 +273,16 @@ public class GenericSearch {
 				nodes.add(build1Node);
 				nodes.add(build2Node);
 				orderQueue(nodes, "GR");
-			} else if (QueueFun == "GR2") {
-				Node requestFoodNode = new Node("requestFood", n.getDepth() + 1, n, problem.getRequestResouce(),
+			} else if (QueueFun.toLowerCase().equals("gr2")) {
+				Node requestFoodNode = new Node("RequestFood", n.getDepth() + 1, n, problem.getRequestResouce(),
 						problem.resourceCostHeuristic());
-				Node requestMaterialsNode = new Node("requestMaterials", n.getDepth() + 1, n,
+				Node requestMaterialsNode = new Node("RequestMaterials", n.getDepth() + 1, n,
 						problem.getRequestResouce(), problem.resourceCostHeuristic());
-				Node requestEnergyNode = new Node("requestEnergy", n.getDepth() + 1, n, problem.getRequestResouce(),
+				Node requestEnergyNode = new Node("RequestEnergy", n.getDepth() + 1, n, problem.getRequestResouce(),
 						problem.resourceCostHeuristic());
-				Node build1Node = new Node("build1", n.getDepth() + 1, n, problem.getBuild1Cost(),
+				Node build1Node = new Node("BUILD1", n.getDepth() + 1, n, problem.getBuild1Cost(),
 						problem.resourceCostHeuristic());
-				Node build2Node = new Node("build2", n.getDepth() + 1, n, problem.getBuild2Cost(),
+				Node build2Node = new Node("BUILD2", n.getDepth() + 1, n, problem.getBuild2Cost(),
 						problem.resourceCostHeuristic());
 				nodes.add(requestFoodNode);
 				nodes.add(requestMaterialsNode);
@@ -244,7 +296,7 @@ public class GenericSearch {
 		}
 	}
 
-	public Deque<Node> expandID(Node n, Deque<Node> nodes) throws IOException {
+	public Deque<Node> expandID(LLAPProblem problem, Node n, Deque<Node> nodes) {
 		if (n.getDepth() < l) {
 			if (problem.getDelay() != 0) {
 				Node waitNode = new Node("wait", n.getDepth() + 1, n, problem.getWaitCost());
@@ -270,7 +322,7 @@ public class GenericSearch {
 			}
 		} else {
 			this.l++;
-			problem.reset();
+			problem.reset(problem.getInitialState());
 			nodes.removeAll(nodes);
 			String stateString = setStringState(problem.getInitialProsperityLevel(), problem.getMoneySpent(),
 					problem.getInitialFood(), problem.getInitialMaterials(), problem.getInitialEnergy());
@@ -282,13 +334,24 @@ public class GenericSearch {
 		}
 	}
 
+	public void print(Deque<Node> nodes) {
+		while (!nodes.isEmpty()) {
+			if (nodes.peek().getParentNode() != null) {
+				System.out.println(nodes.poll().getOperateString());
+			}
+		}
+	}
+
 	public void orderQueue(Deque<Node> nodes, String SearchMode) {
 		ArrayList<Node> tempNodes = new ArrayList<Node>();
 		while (!nodes.isEmpty()) {
-			tempNodes.add(nodes.poll());
+			Node elementNode = nodes.peek();
+			nodes.poll();
+			tempNodes.add(elementNode);
 		}
 
 		if (SearchMode == "UC") {
+			// System.out.println("At " + p);
 			for (int j = 0; j < tempNodes.size(); j++) {
 				Node minNode = tempNodes.get(j);
 				int minIndex = j;
@@ -298,12 +361,16 @@ public class GenericSearch {
 						minIndex = k;
 					}
 				}
+				// System.out.print(minNode.getOperateString() + " ,");
 				nodes.add(minNode);
 				tempNodes.remove(minIndex);
-				if (minIndex != j) {
+				if (tempNodes.size() > 0) {
 					j--;
 				}
 			}
+
+			// System.out.println("");
+			// this.p++;
 		} else if (SearchMode == "GR") {
 			for (int j = 0; j < tempNodes.size(); j++) {
 				Node minNode = tempNodes.get(j);
@@ -316,15 +383,19 @@ public class GenericSearch {
 				}
 				nodes.add(minNode);
 				tempNodes.remove(minIndex);
-				if (minIndex != j) {
+				if (tempNodes.size() > 0) {
 					j--;
 				}
 			}
 		}
 	}
 
-	public boolean goalTest(Node n) {
+	public boolean goalTest(LLAPProblem problem, Node n) {
 		int goalState = n.getState()[0];
+//		if (goalState >= 100 && problem.getInitialEnergy() != 0 && problem.getInitialFood() != 0
+//				&& problem.getInitialMaterials() != 0 && problem.getMoneySpent() <= 100000) {
+//			return true;
+//		}
 		if (goalState >= 100) {
 			return true;
 		}
@@ -349,10 +420,9 @@ public class GenericSearch {
 
 	public void visualize(Queue<Node> path) {
 		int size = path.size();
-		int i = 0;
 		while (!path.isEmpty()) {
-			Node currentNode = path.peek();
-			if (i == 0) {
+			// Node currentNode = path.peek();
+			if (path.peek().getParentNode() == null) {
 				System.out.println("Root Node: " + path.peek().getStateString() + " ,Root Path Cost: "
 						+ path.peek().getRootPathCost() + " ,Heuristic Cost: " + path.peek().getHeuristicCost()
 						+ " ,At Depth: " + path.peek().getDepth());
@@ -362,23 +432,56 @@ public class GenericSearch {
 						+ " ,At Depth: " + path.peek().getDepth());
 			}
 			path.poll();
-			Node nextNode = path.peek();
+			// Node nextNode = path.peek();
+
 			if (!path.isEmpty()) {
-				System.out.println("");
-				System.out.println("|");
-				System.out.println("| " + path.peek().getOperateString());
-				System.out.println("|");
-				System.out.println("v");
-				System.out.println("");
+				if (path.peek().getParentNode() == null) {
+					System.out.println(
+							"__________________________________________________________________________________________________________________________________________________");
+				} else {
+					System.out.println("");
+					System.out.println("|");
+					System.out.println("| " + path.peek().getOperateString());
+					System.out.println("|");
+					System.out.println("v");
+					System.out.println("");
+				}
 			}
-			i++;
 		}
 	}
 
-	public static void main(String[] args) throws IOException {
-		LLAPProblem problem = new LLAPProblem();
-		GenericSearch xGenericSearch = new GenericSearch(problem);
-		xGenericSearch.GeneralSearch(problem, "GR2");
+	public String returnString(LLAPProblem problem, Queue<Node> path) {
+		int size = path.size();
+
+		String output = "";
+		while (!path.isEmpty()) {
+			// Node currentNode = path.peek();
+			if (path.peek().getParentNode() == null) {
+				path.poll();
+				output += path.peek().getOperateString() + ",";
+			} else {
+				if (path.size() == 1) {
+					output += path.peek().getOperateString();
+				} else {
+					output += path.peek().getOperateString() + ",";
+				}
+			}
+		}
+		output += ";" + problem.getMoneySpent() + ";" + size;
+		if (success) {
+			return output;
+		} else {
+			return "NOSOLUTION";
+		}
+		// return output;
+
+	}
+
+	public static void main(String[] args) {
+		String initialState = "50;" + "22,22,22;" + "50,60,70;" + "30,2;19,1;15,1;" + "300,5,7,3,20;" + "500,8,6,3,40;";
+		LLAPProblem problem = new LLAPProblem(initialState);
+		GenericSearch xGenericSearch = new GenericSearch();
+		xGenericSearch.GeneralSearch(problem, "bf");
 //		if (xGenericSearch.success == true) {
 //			System.out.println("Yeeehaw: " + xGenericSearch.goalNode.getDepth());
 //			System.out.println("Yeeehaw: " + xGenericSearch.goalNode.getStateString());
@@ -386,6 +489,8 @@ public class GenericSearch {
 //			System.out.println("Neehaw: " + xGenericSearch.goalNode.getDepth());
 //		}
 		xGenericSearch.visualize(xGenericSearch.pathNodes);
+		// System.out.println(xGenericSearch.returnString(problem,
+		// xGenericSearch.pathNodes));
 	}
 
 }
