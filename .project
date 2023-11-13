@@ -14,16 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/tests/LLAPPlanChecker.java</name>
-			<type>1</type>
-			<location>C:/Users/User/Desktop/tests/LLAPPlanChecker.java</location>
-		</link>
-		<link>
-			<name>src/tests/LLAPPublicGrading.java</name>
-			<type>1</type>
-			<location>C:/Users/User/Desktop/tests/LLAPPublicGrading.java</location>
-		</link>
-	</linkedResources>
 </projectDescription>

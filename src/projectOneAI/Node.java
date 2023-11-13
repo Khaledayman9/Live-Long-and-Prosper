@@ -2,60 +2,108 @@ package projectOneAI;
 
 public class Node {
 
-	private String stateString;
-	private int[] state;
+//	private int state;
+	private int prosperity;
+	private int moneySpent;
+	private int food;
+	private int materials;
+	private int energy;
 	private Node parentNode;
 	private String operateString;
 	private int depth;
 	private int rootPathCost;
 	private int heuristicCost;
+	private int delay;
+	private String type;
 
-	// For node with no heuristics
-	public Node(String operateString, int depth, Node parentNode, int rootPathCost) {
-		this.operateString = operateString;
-		this.depth = depth;
-		this.parentNode = parentNode;
-		this.rootPathCost = rootPathCost;
-	}
-
-	// For node with heuristics
-	public Node(String operateString, int depth, Node parentNode, int rootPathCost, int heuristicCost) {
+	// For node
+	public Node(int prosperity, int moneySpent, int food, int materials, int energy, String operateString, int depth,
+			Node parentNode, int rootPathCost, int delay, String type, int heuristicCost) {
+		this.prosperity = prosperity;
+		this.moneySpent = moneySpent;
+		this.food = food;
+		this.materials = materials;
+		this.energy = energy;
 		this.operateString = operateString;
 		this.depth = depth;
 		this.parentNode = parentNode;
 		this.rootPathCost = rootPathCost;
 		this.heuristicCost = heuristicCost;
-	}
-
-	// OLD
-	public Node(String stateString, int[] state, Node parentNode, String operateString, int depth, int rootPathCost,
-			int heuristicCost) {
-		this.stateString = stateString;
-		this.state = state;
-		this.parentNode = parentNode;
-		this.operateString = operateString;
-		this.depth = depth;
-		this.rootPathCost = rootPathCost;
-		this.heuristicCost = heuristicCost;
+		this.delay = delay;
+		this.type = type;
 	}
 
 	// For root
-	public Node(String stateString, int[] state, int depth, int rootPathCost, int heuristicCost) {
-		this.stateString = stateString;
-		this.state = state;
+	public Node(int prosperity, int moneySpent, int food, int materials, int energy, int depth, int rootPathCost,
+			int delay, String type, int heuristicCost) {
+		this.prosperity = prosperity;
+		this.moneySpent = moneySpent;
+		this.food = food;
+		this.materials = materials;
+		this.energy = energy;
 		this.parentNode = null;
-		this.operateString = "";
+		this.operateString = "Root";
 		this.depth = depth;
 		this.rootPathCost = rootPathCost;
 		this.heuristicCost = heuristicCost;
+		this.delay = delay;
+		this.type = type;
 	}
 
-	public int[] getState() {
-		return state;
+	public int getProsperity() {
+		return prosperity;
 	}
 
-	public void setState(int[] state) {
-		this.state = state;
+	public void setProsperity(int prosperity) {
+		this.prosperity = prosperity;
+	}
+
+	public int getMoneySpent() {
+		return moneySpent;
+	}
+
+	public void setMoneySpent(int moneySpent) {
+		this.moneySpent = moneySpent;
+	}
+
+	public int getFood() {
+		return food;
+	}
+
+	public void setFood(int food) {
+		this.food = food;
+	}
+
+	public int getMaterials() {
+		return materials;
+	}
+
+	public void setMaterials(int materials) {
+		this.materials = materials;
+	}
+
+	public int getEnergy() {
+		return energy;
+	}
+
+	public void setEnergy(int energy) {
+		this.energy = energy;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public int getDelay() {
+		return delay;
+	}
+
+	public void setDelay(int delay) {
+		this.delay = delay;
 	}
 
 	public static void main(String[] args) {
@@ -72,16 +120,14 @@ public class Node {
 
 	@Override
 	public String toString() {
-		return "State: " + this.stateString + ", Operator: " + this.operateString + ", Depth: " + this.depth
-				+ ", Path Cost: " + this.rootPathCost;
-	}
+		String stateString = "";
 
-	public String getStateString() {
+		stateString = "State -> (Prosperity:" + this.prosperity + ", Money Spent:" + this.moneySpent + ", Food:"
+				+ this.food + ", Materials:" + this.materials + ", Energy:" + this.energy + ")\nOperator: "
+				+ this.operateString + " - Depth: " + this.depth + " - Path Cost: " + this.rootPathCost
+				+ " - Heuristic Cost: " + this.heuristicCost + "." + ",Child of: " + this.parentNode.operateString
+				+ "\nDelay = " + this.delay + ", Type: " + this.type;
 		return stateString;
-	}
-
-	public void setStateString(String stateString) {
-		this.stateString = stateString;
 	}
 
 	public Node getParentNode() {
