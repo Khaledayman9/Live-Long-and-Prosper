@@ -1,4 +1,4 @@
-package projectOneAI;
+package code;
 
 public class Node {
 
@@ -104,10 +104,6 @@ public class Node {
 
 	public void setDelay(int delay) {
 		this.delay = delay;
-	}
-
-	public static void main(String[] args) {
-		System.out.println("Hi");
 	}
 
 	public int getHeuristicCost() {

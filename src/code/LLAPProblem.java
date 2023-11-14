@@ -1,4 +1,4 @@
-package projectOneAI;
+package code;
 
 public class LLAPProblem {
 
@@ -78,10 +78,6 @@ public class LLAPProblem {
 		this.foodReq = false;
 		this.materialsReq = false;
 		this.delay = 0;
-	}
-
-	public void reset(String initialState) {
-		initialize(initialState);
 	}
 
 	public int getMoneySpent() {

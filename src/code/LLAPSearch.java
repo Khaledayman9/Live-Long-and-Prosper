@@ -1,4 +1,4 @@
-package projectOneAI;
+package code;
 
 public class LLAPSearch extends GenericSearch {
 
@@ -40,9 +40,9 @@ public class LLAPSearch extends GenericSearch {
 				+ "524,18,17,17,38;";
 		String initialState10 = "32;" + "20,16,11;" + "76,14,14;" + "9,1;9,2;9,1;" + "358,14,25,23,39;"
 				+ "5024,20,17,17,38;";
-		LLAPProblem problem = new LLAPProblem(initialState7);
+		LLAPProblem problem = new LLAPProblem(initialState0);
 		GenericSearch xGenericSearch = new GenericSearch();
-		xGenericSearch.GeneralSearch(problem, "as2", true);
+		xGenericSearch.GeneralSearch(problem, "df", true);
 		System.out.println(xGenericSearch.returnString());
 	}
 }

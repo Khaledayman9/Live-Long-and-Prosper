@@ -6,7 +6,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import projectOneAI.LLAPSearch;
+import code.LLAPSearch;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 

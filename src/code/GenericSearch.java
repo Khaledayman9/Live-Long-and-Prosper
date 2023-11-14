@@ -1,4 +1,4 @@
-package projectOneAI;
+package code;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -41,6 +41,8 @@ public class GenericSearch {
 			nodes.add(xNode);
 			uniqueValues.add(xNode);
 			while (true) {
+				if (success)
+					break;
 				if (nodes.isEmpty()) {
 					this.goalNode = null;
 					this.success = false;
@@ -145,8 +147,9 @@ public class GenericSearch {
 			this.l++;
 			nodes.removeAll(nodes);
 			uniqueValues.removeAll(uniqueValues);
-			GeneralSearch(problem, "df", this.visualize);
+			GeneralSearch(problem, "id", this.visualize);
 		}
+
 	}
 
 	public void expandBF(Node n, LLAPProblem problem) {
