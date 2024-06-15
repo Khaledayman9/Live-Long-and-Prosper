@@ -56,7 +56,7 @@ Inside LLAPSearch you will implement solve as the key function which will be the
  priceBUILD2foodUseBUILD2
  materialsUseBUILD2energyUseBUILD2prosperityBUILD1;*
  
- where
+ ,where
  - *initialProsperity* represents the town’s initial prosperity level (maximum is 100).
  - *initialFood;initialMaterials;initialEnergy;* indicate the starting levels of food, materials and energy respectively (maximum is 50).
  - *unitPriceFood;unitPriceMaterials;unitPriceEnergy;* the price per unit of the consumption of each of the resources (consumption as a result of any action).
@@ -86,7 +86,9 @@ Inside LLAPSearch you will implement solve as the key function which will be the
 
 
 # Example
+
 ![WEx](https://github.com/Khaledayman9/Live-Long-and-Prosper/assets/105018459/4eab8e5c-7163-4e1b-b762-35058461632e)
+
 Please note that this example illustrates only one possible sequence of actions and not necessarily one that leads to the goal. The representation of the state also is just for illustration and not necessarily one you should follow.
 
 
