@@ -1,4 +1,4 @@
-# Live-Long-and-Prosper
+# Live-Long-and-Prosper Agent
 A search agent to help a town achieve a prosperity level of 100 by efficiently managing resources and actions. The town requires food, materials, and energy to prosper, with buildings playing a crucial role in boosting prosperity. The primary objective is to develop a Java-based search agent capable of planning optimal sequences of actions to maximize the town's prosperity while adhering to resource constraints and a budget of 100,000 credits.
 
 # Description
