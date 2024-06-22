@@ -94,7 +94,5 @@ Please note that this example illustrates only one possible sequence of actions 
 
 # Technologies
 - Java
-  
 - Eclipse
-  
 - JUnit4
